@@ -26,6 +26,7 @@
       <li class="list-group-item">Item 2</li>
       <li class="list-group-item">Item 3</li>
       <li class="list-group-item">Item 4</li>
+      <li class="list-group-item">New Item 5</li>
     </ul>
    </div>
   </div>
@@ -38,13 +39,18 @@
     // const title = document.querySelector(".title")
     // title.style.color="green";
     // title.style.fontWeight="bold";
-    const colorItems = document.getElementsByClassName("list-group-item");
-    colorItems[2].style.backgroundColor = "green";
+    // const colorItems = document.getElementsByClassName("list-group-item");
+    // colorItems[2].style.backgroundColor = "green";
     
-    for (let i=0;i <colorItems.length;i++){
-        colorItems[i].style.fontWeight = "bold";
-    }
+    // for (let i=0;i <colorItems.length;i++){
+    //     colorItems[i].style.fontWeight = "bold";
+    // }
+    const tag = document.getElementsByTagName("li");
+    tag[4].textContent = "Laptop";
+    
+
   </script>
+
 
 </body>
 </html>
