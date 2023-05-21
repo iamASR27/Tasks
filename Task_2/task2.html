@@ -45,10 +45,23 @@
     // for (let i=0;i <colorItems.length;i++){
     //     colorItems[i].style.fontWeight = "bold";
     // }
-    const tag = document.getElementsByTagName("li");
-    tag[4].textContent = "Laptop";
+    // const tag = document.getElementsByTagName("li");
+    // tag[4].textContent = "Laptop";
     
+      const items = document.querySelector("li:nth-child(2)");
+      items.style.backgroundColor="lightgreen";
+      const thirditem = document.querySelector("li:nth-child(3)");
+      thirditem.style.visibility ="hidden";
 
+      const new_Item = document.querySelectorAll("li");
+      new_Item[1].style.color ="green";
+
+      const oddELements = document.querySelectorAll("li:nth-child(odd)");
+      for(let i=0;i <oddELements.length;i++){
+        oddELements[i].style.backgroundColor="green";
+      }
+
+      
   </script>
 
 
