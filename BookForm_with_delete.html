@@ -15,7 +15,7 @@
             align-items: center;
             margin: 0;
             padding: 20%;
-            height: 70vh;
+            height: 30vh;
             box-sizing: border-box;
             background-color: #f8f9fa;
         }
@@ -29,26 +29,31 @@
       font-size: 30px;
       margin-bottom: 10px;
     }
+    .action-buttons{
+      display: flex;
+      gap: 5px;
+      padding: 2px 2px 2px 2px;
+    }
     /* label {
       display: block;
       margin-bottom: 8px;
     } */
-    .btn-primary {
+    /* .btn-primary {
       display: flex;
       /* padding: 8px 16px; */
-      font-size: 14px;
-      font-weight: 500;
+      /* font-size: 14px;
+      font-weight: 500; */
       /* line-height: 1.5; */
       /* text-align: center; */
       /* white-space: nowrap; */
       /* vertical-align: middle; */
       /* cursor: pointer; */
-      border: 1px solid transparent;
+      /* border: 1px solid transparent;
       border-radius: 4px;
-      background-color: rgb(171, 246, 248);
+      background-color: rgb(171, 246, 248); */
       /* color: dimgray;  */
       
-    }
+    /* } */ 
         .container{
             display: flex;
             border: 1px solid grey;
@@ -61,14 +66,15 @@
             /* background-color: #dc3545; */
             color: #fff;
             border: none;
-            /* padding: 4px 8px; */
+            /* padding: 4px 4px 4px 4px; */
             height: 6vh;
-            padding-top: 1px;
-            margin-top: 5px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            /* margin-top: 5px; */
             cursor: pointer;
-            display: flexbox;
-            position: absolute;
-            right: 450px; /* Adjust the value as needed */
+            display: flex;
+            /* position: absolute; */
+            /* right: 450px;  Adjust the value as needed */
             /* top: 50%;  */
             /* transform: translateY(-50%);  */
         }
@@ -104,21 +110,29 @@
       font-size: 24px;
       font-weight: bold;
     }
-    .item:hover,.item:focus{
+    /* .item:hover,.item:focus{
       background-color: blanchedalmond;
       outline: none;
-    }
+    } */
     .btn-primary:hover{
       background-color: antiquewhite;
     }
-        li{
+    li {
             display: flex;
-            /* gap: 300px; */
+            justify-content: space-between; /* Adjust the space between delete buttons and entries */
+            align-items: center; /* Align items vertically */
             margin-top: 10px;
             margin-bottom: 10px;
+            padding-right: 16px; /* Add some right padding to entries */
         }
-        .float-right{
+        /* .float-right{
             float: right;
+        } */
+        .btn-same-size{
+          height: 6vh;
+          padding-top: 2px;
+          padding-bottom: 2px;
+          margin-right: 5px;
         }
         /* .action-buttons{
             display: flex;
@@ -152,7 +166,47 @@
       const form = document.getElementById("my-form");
       const userList = document.getElementById("listofitems");
 form.addEventListener("submit",addItemsToLocalStorage);
-userList.addEventListener("click",deleteItems);
+userList.addEventListener("click", function (e) {
+    if (e.target.classList.contains("delete")) {
+      deleteItems(e);
+    } else if (e.target.classList.contains("edit")) {
+      editItems(e);
+    }
+  });
+// function addItemsToLocalStorage(e) {
+//   e.preventDefault();
+//   const newName = document.getElementById("name").value;
+//   const newEmail = document.getElementById("email").value;
+
+//   const obj = {
+//     Name: newName,
+//     Email: newEmail
+//   };
+
+ 
+//   let existingData = localStorage.getItem("userData");
+//   let userData = [];
+
+//   if (existingData) {
+//     // Parse the existing data into an array
+//     userData = JSON.parse(existingData);
+//   }
+
+ 
+//   userData.push(obj);
+
+ 
+//   localStorage.setItem("userData", JSON.stringify(userData));
+
+ 
+//   screenDisplay(obj);
+
+  
+
+//   document.getElementById("name").value = "";
+//   document.getElementById("email").value = "";
+// }
+
 function addItemsToLocalStorage(e) {
   e.preventDefault();
   const newName = document.getElementById("name").value;
@@ -162,30 +216,33 @@ function addItemsToLocalStorage(e) {
     Name: newName,
     Email: newEmail
   };
+let existingData = localStorage.getItem("userData");
+let userData = [];
 
- 
-  let existingData = localStorage.getItem("userData");
-  let userData = [];
-
-  if (existingData) {
-    // Parse the existing data into an array
+if (existingData) {
     userData = JSON.parse(existingData);
   }
 
- 
-  userData.push(obj);
-
- 
-  localStorage.setItem("userData", JSON.stringify(userData));
-
- 
-  screenDisplay(obj);
-
+  const editUserIndex = localStorage.getItem("editUserIndex");
   
+  if (editUserIndex !== null) {
+    // Editing an existing user
+    const index = parseInt(editUserIndex);
+    if (userData[index]) {
+      userData[index] = obj;
+    }
+    localStorage.removeItem("editUserIndex");
+  } else {
+    // Adding a new user
+    userData.push(obj);
+  }
 
-  document.getElementById("name").value = "";
-  document.getElementById("email").value = "";
+localStorage.setItem("userData", JSON.stringify(userData));
+screenDisplay(obj);
+document.getElementById("name").value = "";
+document.getElementById("email").value = "";
 }
+
 
 function screenDisplay(obj){
    
@@ -196,7 +253,8 @@ function screenDisplay(obj){
 
     const actionButtons = document.createElement("div");
   actionButtons.className = "action-buttons";
-  actionButtons.innerHTML=`<button class="btn btn-danger btn-sm float-right delete">Delete</button>`
+  actionButtons.innerHTML=`<button class="btn btn-danger btn-sm  delete">Delete</button>
+  <button class="btn btn-danger btn-sm btn-same-size edit">Edit</button>`
   li.appendChild(actionButtons);
   userList.appendChild(li);
 }
@@ -221,8 +279,50 @@ function deleteItems(e) {
                 
                 
             }
+           
         }
     }
+    // function editItems(e){
+    //   if (e.target.classList.contains('edit')){
+    //     const li = e.target.parentElement.parentElement;
+    //     const entry = li.firstChild.textContent;
+        
+    //     const userData = JSON.parse(localStorage.getItem("userData"));
+    //     const user = userData.find((obj) => obj.Name + "-" + obj.Email===entry);
+    //     if (user){
+        
+    //     document.getElementById("name").value = user.Name;
+    //     document.getElementById("email").value = user.Email;
+    //     localStorage.setItem("editUser", JSON.stringify(user));
+    //     }
+
+    //   }
+    // }
+    function editItems(e) {
+  if (e.target.classList.contains("edit")) {
+    const li = e.target.parentElement.parentElement;
+    const entry = li.firstChild.textContent;
+
+    let existingData = localStorage.getItem("userData");
+    let userData = [];
+
+    if (existingData) {
+      userData = JSON.parse(existingData);
+    }
+
+    const userIndex = userData.findIndex(
+      (obj) => obj.Name + "-" + obj.Email === entry
+    );
+
+    if (userIndex !== -1) {
+      const user = userData[userIndex];
+      document.getElementById("name").value = user.Name;
+      document.getElementById("email").value = user.Email;
+      localStorage.setItem("editUserIndex", userIndex);
+      li.remove();
+    }
+  }
+}
 
 
     </script>
