@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker Project</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <header class="bg-info text-white text-center p-4 mb-3">
+    <div class="div">
+        <h2>Expense Tracker</h2>
+    </div>
+</header>
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+        <form id="addExpense">
+            <div class="mb-3">
+            <label for="amount" class="form-label">Enter the expense amount</label>
+            <input type="number" min="1" step="any" id="amount" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Write description</label>
+            <input type="text" id="description" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="category" class="form-label">Choose category</label>
+            <select id="category" class="form-select" required>
+                <option value="movies">Movies</option>
+                <option value="vehicles">Vehicles</option>
+                <option value="food">Food</option>
+                <option value="clothes">Clothes</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+            <button type="submit" id="add" class="btn btn-primary">Submit</button>
+            
+</form>
+<ul id="listofexpense"></ul>
+</div>
+</div>
+</div>
+<script>
+    const form = document.getElementById("addExpense");
+    const userList = document.getElementById("listofexpense");
+
+    form.addEventListener("submit",addDataToLocalStorage);
+
+    userList.addEventListener("click",function(e){
+        if(e.target.classList.contains("delete")){
+            deleteExpense(e);
+        }else if(e.target.classList.contains("edit")){
+            editExpense(e);
+        }
+    })
+
+    function addDataToLocalStorage(e){
+        e.preventDefault();
+        const newAmount = document.getElementById("amount").value;
+        const newDescription = document.getElementById("description").value;
+        const newCategory = document.getElementById("category").value;
+
+        const obj = {
+            Amount: newAmount,
+            Description: newDescription,
+            Category: newCategory
+        };
+        let userData = [];
+        let existingData = localStorage.getItem("userData");
+
+        if(existingData){
+            userData = JSON.parse(existingData);
+        }
+
+        const editUserIndex = localStorage.getItem("editUserIndex");
+        if(editUserIndex!==null){
+            const index = parseInt(editUserIndex);
+            if(userData[index]){
+                userData[index] = obj;
+            }
+            localStorage.removeItem("editUserIndex");
+
+        }else{
+            userData.push(obj);
+        }
+        localStorage.setItem("userData",JSON.stringify(userData));
+        screenDisplay(obj);
+        document.getElementById("amount").value = "";
+        document.getElementById("description").value = "";
+        document.getElementById("category").value = "";
+    }
+
+    function screenDisplay(obj){
+        const li = document.createElement("li");
+        li.className = "d-flex justify-content-between";
+        li.textContent = obj.Amount + "-" + obj.Description + "-" + obj.Category;
+        userList.appendChild(li);
+
+        const actionButtons = document.createElement("div");
+        actionButtons.className = "mb-2";
+        actionButtons.innerHTML = `<button class="btn btn-danger btn-sm delete">Delete</button>
+        <button class="btn btn-secondary btn-sm edit">Edit</button>`
+        li.appendChild(actionButtons);
+
+    }
+
+    function deleteExpense(e){
+        if(e.target.classList.contains("delete")){
+            const li = e.target.parentElement.parentElement;
+            const entry = li.firstChild.textContent;
+
+            let userData = [];
+            let existingData = localStorage.getItem("userData");
+            if(existingData){
+                userData = JSON.parse(existingData);
+                userData = userData.filter((item) =>{
+                    return item.Amount + "-" + item.Description + "-" + item.Category !==entry;
+                })
+                localStorage.setItem("userData",JSON.stringify(userData));
+
+            }
+            if(userData.length===0){
+                localStorage.removeItem("userData");
+            }
+            li.remove();
+        }
+    }
+
+    function editExpense(e){
+        if(e.target.classList.contains("edit")){
+            const li = e.target.parentElement.parentElement;
+            const entry = li.firstChild.textContent;
+
+            let userData = [];
+            let existingData = localStorage.getItem("userData");
+            if(existingData){
+                userData = JSON.parse(existingData);
+            }
+            const userIndex = userData.findIndex((obj)=>{
+                return obj.Amount + "-" + obj.Description + "-" + obj.Category === entry;
+            })
+
+            if(userIndex !== -1){
+                const user = userData[userIndex];
+                document.getElementById("amount").value = user.Amount;
+                document.getElementById("description").value = user.Description;
+                document.getElementById("category").value = user.Category;
+                localStorage.setItem("editUserIndex", userIndex);
+
+                user.Amount = document.getElementById("amount").value;
+            user.Category = document.getElementById("category").value;
+
+            localStorage.setItem("userData", JSON.stringify(userData));
+            
+                li.remove();
+            }
+    }
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
+integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" 
+crossorigin="anonymous"></script>
+</body>
+</html>
