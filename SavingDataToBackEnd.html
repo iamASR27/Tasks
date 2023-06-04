@@ -146,7 +146,7 @@
     <script >
       const form = document.getElementById("my-form");
       const userList = document.getElementById("listofitems");
-form.addEventListener("submit",addItemsToLocalStorage);
+form.addEventListener("submit",addItemsToBackEnd);
 
 document.addEventListener("DOMContentLoaded", function () {
   fetchDataFromBackend();
@@ -159,7 +159,7 @@ userList.addEventListener("click", function (e) {
     }
   });
 
-function addItemsToLocalStorage(e) {
+function addItemsToBackEnd(e) {
   e.preventDefault();
   const newName = document.getElementById("name").value;
   const newEmail = document.getElementById("email").value;
@@ -170,72 +170,61 @@ function addItemsToLocalStorage(e) {
   };
 
   axios
-  .post("https://crudcrud.com/api/599f5b45f884465ab82a05c5dcf8d0ca/newBooking", obj)
-  .then(res => screenDisplay(res.data))
+  .post("https://crudcrud.com/api/38e07153d87d47ed80659e4958aa699d/newBooking", obj)
+  .then(res => {
+    screenDisplay(res.data);
+    document.getElementById("name").value = "";
+    document.getElementById("email").value = "";
+})
   .catch(err => {
     //document.body.innerHTML =  document.body.innerHTML + "<h4>Something went wrong</h4>";
     console.log(err);
   })
-// let existingData = localStorage.getItem("userData");
-// let userData = [];
 
-// if (existingData) {
-//     userData = JSON.parse(existingData);
-//   }
 
-//   const editUserIndex = localStorage.getItem("editUserIndex");
-  
-//   if (editUserIndex !== null) {
-//     // Editing an existing user
-//     const index = parseInt(editUserIndex);
-//     if (userData[index]) {
-//       userData[index] = obj;
-//     }
-//     localStorage.removeItem("editUserIndex");
-//   } else {
-//     // Adding a new user
-//     userData.push(obj);
-//   }
 
-// localStorage.setItem("userData", JSON.stringify(userData));
-screenDisplay(obj);
-document.getElementById("name").value = "";
-document.getElementById("email").value = "";
+//screenDisplay(obj);
+
 }
 
 
-function screenDisplay(obj){
-   
-    const li = document.createElement("li");
-    li.className = "link-offset-1-hover";
-    li.textContent = obj.Name + "-" + obj.Email;
-    
+function screenDisplay(obj) {
+  const li = document.createElement("li");
+  li.className = "link-offset-1-hover";
+  li.textContent = obj.Name + "-" + obj.Email;
 
-    const actionButtons = document.createElement("div");
+  const actionButtons = document.createElement("div");
   actionButtons.className = "action-buttons";
-  actionButtons.innerHTML=`<button class="btn btn-danger btn-sm  delete">Delete</button>
-  <button class="btn btn-danger btn-sm btn-same-size edit">Edit</button>`
+
+  const deleteButton = document.createElement("button");
+  deleteButton.className = "btn btn-danger btn-sm delete";
+  deleteButton.textContent = "Delete";
+  deleteButton.setAttribute("data-id", obj._id); 
+  const editButton = document.createElement("button");
+  editButton.className = "btn btn-danger btn-sm btn-same-size edit";
+  editButton.textContent = "Edit";
+  editButton.setAttribute("editdata-id", obj._id);
+
+  actionButtons.appendChild(deleteButton);
+  actionButtons.appendChild(editButton);
+
   li.appendChild(actionButtons);
   userList.appendChild(li);
 }
+
 function deleteItems(e) {
         if (e.target.classList.contains('delete')) {
             if (confirm("Are you sure?")) {
+                const deleteButton = e.target
                 const li = e.target.parentElement.parentElement;
-                const entry = li.firstChild.textContent;
-
-                let existingData = localStorage.getItem("userData");
-                let userData = [];
-                if (existingData) {
-                     userData = JSON.parse(existingData);
-                     userData = userData.filter((item) => item.Name + "-" + item.Email !== entry);
-                     localStorage.setItem("userData", JSON.stringify(userData));
-                    }
-                if (userData.length===0){
-                    localStorage.removeItem("userData");
-                }
+                //const entry = li.firstChild.textContent;
 
                 li.remove();
+                const itemId = deleteButton.getAttribute("data-id");
+                axios
+                .delete(`https://crudcrud.com/api/38e07153d87d47ed80659e4958aa699d/newBooking/${itemId}`)
+                .then(res => console.log(res.data))
+                .catch(err => console.log(err));
                 
                 
             }
@@ -247,30 +236,50 @@ function deleteItems(e) {
   if (e.target.classList.contains("edit")) {
     const li = e.target.parentElement.parentElement;
     const entry = li.firstChild.textContent;
+    const editButton = e.target
 
-    let existingData = localStorage.getItem("userData");
-    let userData = [];
+    axios
+      .get("https://crudcrud.com/api/38e07153d87d47ed80659e4958aa699d/newBooking")
+      .then(res => {
+        const userData = res.data;
+        const userIndex = userData.findIndex(obj => obj.Name + "-" + obj.Email === entry);
 
-    if (existingData) {
-      userData = JSON.parse(existingData);
-    }
+        if (userIndex !== -1) {
+          const user = userData[userIndex];
+          
+          li.remove();
+          document.getElementById("name").value = user.Name;
+          document.getElementById("email").value = user.Email;
 
-    const userIndex = userData.findIndex(
-      (obj) => obj.Name + "-" + obj.Email === entry
-    );
-
-    if (userIndex !== -1) {
-      const user = userData[userIndex];
-      document.getElementById("name").value = user.Name;
-      document.getElementById("email").value = user.Email;
-      localStorage.setItem("editUserIndex", userIndex.toString());
-      li.remove();
-    }
+          const updateUser = {
+            Name: document.getElementById("name").value,
+            Email: document.getElementById("email").value
+          };
+        
+          const userId = editButton.getAttribute("editdata-id");
+          axios
+            .put(`https://crudcrud.com/api/38e07153d87d47ed80659e4958aa699d/newBooking/${userId}`, updateUser)
+            .then(res => {
+              console.log(res.data);
+              
+            //   user.Name = updateUser.Name;
+            //   user.Email = updateUser.Email;
+            //   li.firstChild.textContent = user.Name + "-" + user.Email;
+            })
+            .catch(err => console.log(err));
+        }
+      })
+      .catch(err => console.log(err));
+      return;
   }
 }
+
+    
+  
+
 function fetchDataFromBackend() {
   axios
-    .get("https://crudcrud.com/api/599f5b45f884465ab82a05c5dcf8d0ca/newBooking")
+    .get("https://crudcrud.com/api/38e07153d87d47ed80659e4958aa699d/newBooking")
     .then((res) => {
       const data = res.data;
       data.forEach((obj) => {
