@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Window</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+     rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+      crossorigin="anonymous">
+      <style>
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 20%;
+            height: 30vh;
+            box-sizing: border-box;
+            background-color: #f8f9fa;
+        }
+        form{
+            text-align: left;
+           width: 500px;
+            /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+
+        }
+        h1 {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+    .action-buttons{
+      display: flex;
+      gap: 5px;
+      padding: 2px 2px 2px 2px;
+    }
+   
+        .container{
+            display: flex;
+            border: 1px solid grey;
+            background-color: aliceblue;
+            max-width: 100%;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .delete {
+            /* background-color: #dc3545; */
+            color: #fff;
+            border: none;
+            /* padding: 4px 4px 4px 4px; */
+            height: 6vh;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            /* margin-top: 5px; */
+            cursor: pointer;
+            display: flex;
+            /* position: absolute; */
+            /* right: 450px;  Adjust the value as needed */
+            /* top: 50%;  */
+            /* transform: translateY(-50%);  */
+        }
+        /* #users {
+      margin-top: 20px;
+      flex-grow: 1;
+      list-style-type: none;
+      padding: 0;
+    }  */
+    /* .items {
+      list-style-type: none;
+      padding: 0;
+    }
+  
+    /* .item:nth-child(odd) {
+      background-color: #f2f2f2;
+    }
+
+    .item:nth-child(even) {
+      background-color: #e0e0e0;
+    } */
+    input[type="submit"]:active,
+.item:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+    header {
+      margin-top: 40%;
+      background-color: #36485c;
+      color: #dbbcdfab;
+      padding: 16px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    /* .item:hover,.item:focus{
+      background-color: blanchedalmond;
+      outline: none;
+    } */
+    .btn-primary:hover{
+      background-color: antiquewhite;
+    }
+    li {
+            display: flex;
+            justify-content: space-between; /* Adjust the space between delete buttons and entries */
+            align-items: center; /* Align items vertically */
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding-right: 16px; /* Add some right padding to entries */
+        }
+        /* .float-right{
+            float: right;
+        } */
+        .btn-same-size{
+          height: 6vh;
+          padding-top: 2px;
+          padding-bottom: 2px;
+          margin-right: 5px;
+        }
+        /* .action-buttons{
+            display: flex;
+           
+        } */
+      </style>
+</head>
+<body>
+    <section>
+    <header >Window</header>
+    <div class="container">
+        <form id="my-form" class="form-inline" autocomplete="on">
+            <h1>Add User</h1>
+            <!-- <div class="msg"></div> -->
+            
+            <label for="name" class="form-label">Name:</label>
+            <input type="text" id="name" class="form-control" autocomplete="on" required>
+            <label for="email" class="form-label">Email:</label>
+            <input type="text" id="email" class="form-control" autocomplete="on" required><br>
+            <input type="submit" class="btn-primary" value="Submit">
+        </form>
+        <ul id="users"></ul>
+        <ul id="listofitems" class="items">
+            <!-- <li class="item">To Login</li>
+            <li class="item">Please Enter Your</li>
+            <li class="item" >Details</li> -->
+        </ul>
+    </div>
+</section>
+    <script >
+      const form = document.getElementById("my-form");
+      const userList = document.getElementById("listofitems");
+form.addEventListener("submit",addItemsToLocalStorage);
+
+document.addEventListener("DOMContentLoaded", function () {
+  fetchDataFromBackend();
+});
+userList.addEventListener("click", function (e) {
+    if (e.target.classList.contains("delete")) {
+      deleteItems(e);
+    } else if (e.target.classList.contains("edit")) {
+      editItems(e);
+    }
+  });
+
+function addItemsToLocalStorage(e) {
+  e.preventDefault();
+  const newName = document.getElementById("name").value;
+  const newEmail = document.getElementById("email").value;
+
+  const obj = {
+    Name: newName,
+    Email: newEmail
+  };
+
+  axios
+  .post("https://crudcrud.com/api/599f5b45f884465ab82a05c5dcf8d0ca/newBooking", obj)
+  .then(res => screenDisplay(res.data))
+  .catch(err => {
+    //document.body.innerHTML =  document.body.innerHTML + "<h4>Something went wrong</h4>";
+    console.log(err);
+  })
+// let existingData = localStorage.getItem("userData");
+// let userData = [];
+
+// if (existingData) {
+//     userData = JSON.parse(existingData);
+//   }
+
+//   const editUserIndex = localStorage.getItem("editUserIndex");
+  
+//   if (editUserIndex !== null) {
+//     // Editing an existing user
+//     const index = parseInt(editUserIndex);
+//     if (userData[index]) {
+//       userData[index] = obj;
+//     }
+//     localStorage.removeItem("editUserIndex");
+//   } else {
+//     // Adding a new user
+//     userData.push(obj);
+//   }
+
+// localStorage.setItem("userData", JSON.stringify(userData));
+screenDisplay(obj);
+document.getElementById("name").value = "";
+document.getElementById("email").value = "";
+}
+
+
+function screenDisplay(obj){
+   
+    const li = document.createElement("li");
+    li.className = "link-offset-1-hover";
+    li.textContent = obj.Name + "-" + obj.Email;
+    
+
+    const actionButtons = document.createElement("div");
+  actionButtons.className = "action-buttons";
+  actionButtons.innerHTML=`<button class="btn btn-danger btn-sm  delete">Delete</button>
+  <button class="btn btn-danger btn-sm btn-same-size edit">Edit</button>`
+  li.appendChild(actionButtons);
+  userList.appendChild(li);
+}
+function deleteItems(e) {
+        if (e.target.classList.contains('delete')) {
+            if (confirm("Are you sure?")) {
+                const li = e.target.parentElement.parentElement;
+                const entry = li.firstChild.textContent;
+
+                let existingData = localStorage.getItem("userData");
+                let userData = [];
+                if (existingData) {
+                     userData = JSON.parse(existingData);
+                     userData = userData.filter((item) => item.Name + "-" + item.Email !== entry);
+                     localStorage.setItem("userData", JSON.stringify(userData));
+                    }
+                if (userData.length===0){
+                    localStorage.removeItem("userData");
+                }
+
+                li.remove();
+                
+                
+            }
+           
+        }
+    }
+    
+    function editItems(e) {
+  if (e.target.classList.contains("edit")) {
+    const li = e.target.parentElement.parentElement;
+    const entry = li.firstChild.textContent;
+
+    let existingData = localStorage.getItem("userData");
+    let userData = [];
+
+    if (existingData) {
+      userData = JSON.parse(existingData);
+    }
+
+    const userIndex = userData.findIndex(
+      (obj) => obj.Name + "-" + obj.Email === entry
+    );
+
+    if (userIndex !== -1) {
+      const user = userData[userIndex];
+      document.getElementById("name").value = user.Name;
+      document.getElementById("email").value = user.Email;
+      localStorage.setItem("editUserIndex", userIndex.toString());
+      li.remove();
+    }
+  }
+}
+function fetchDataFromBackend() {
+  axios
+    .get("https://crudcrud.com/api/599f5b45f884465ab82a05c5dcf8d0ca/newBooking")
+    .then((res) => {
+      const data = res.data;
+      data.forEach((obj) => {
+        screenDisplay(obj);
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" 
+    crossorigin="anonymous"></script>
+</body>
+</html>
+
