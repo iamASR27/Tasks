@@ -59,24 +59,7 @@
             /* top: 50%;  */
             /* transform: translateY(-50%);  */
         }
-        /* #users {
-      margin-top: 20px;
-      flex-grow: 1;
-      list-style-type: none;
-      padding: 0;
-    }  */
-    /* .items {
-      list-style-type: none;
-      padding: 0;
-    }
-  
-    /* .item:nth-child(odd) {
-      background-color: #f2f2f2;
-    }
-
-    .item:nth-child(even) {
-      background-color: #e0e0e0;
-    } */
+       
     input[type="submit"]:active,
 .item:active {
   transform: scale(0.95);
@@ -133,6 +116,7 @@
             <input type="text" id="name" class="form-control" autocomplete="on" required>
             <label for="email" class="form-label">Email:</label>
             <input type="text" id="email" class="form-control" autocomplete="on" required><br>
+            <!-- <input type="hidden" id="userId"> -->
             <input type="submit" class="btn-primary" value="Submit">
         </form>
         <ul id="users"></ul>
@@ -146,11 +130,12 @@
     <script >
       const form = document.getElementById("my-form");
       const userList = document.getElementById("listofitems");
-form.addEventListener("submit",addItemsToBackEnd);
 
-document.addEventListener("DOMContentLoaded", function () {
-  fetchDataFromBackend();
-});
+      form.addEventListener("submit",addItemsToBackEnd);
+
+      document.addEventListener("DOMContentLoaded", function () {
+        fetchDataFromBackend();
+      });
 userList.addEventListener("click", function (e) {
     if (e.target.classList.contains("delete")) {
       deleteItems(e);
@@ -159,6 +144,7 @@ userList.addEventListener("click", function (e) {
     }
   });
 
+var userId = null;
 function addItemsToBackEnd(e) {
   e.preventDefault();
   const newName = document.getElementById("name").value;
@@ -168,23 +154,88 @@ function addItemsToBackEnd(e) {
     Name: newName,
     Email: newEmail
   };
+  //screenDisplay(obj);
+  //const userId = document.getElementById("userId").value;
+  if (userId !== null) {
+    editItemsInBackend(userId, obj);
+    screenDisplay(obj);
+    userId = null;
+  
+  }else{
+    addNewItemsToBackend(obj);
+    
+    
+    
+  }
+  //setTimeout(fetchDataFromBackend, 500);
+  //resetForm();
+  //screenDisplay(obj);
+}
 
+function editItemsInBackend(userId, user) {
+  
+    
+   //userId = editButton.getAttribute("editdata-id");
   axios
-  .post("https://crudcrud.com/api/38e07153d87d47ed80659e4958aa699d/newBooking", obj)
-  .then(res => {
-    screenDisplay(res.data);
-    document.getElementById("name").value = "";
-    document.getElementById("email").value = "";
-})
-  .catch(err => {
-    //document.body.innerHTML =  document.body.innerHTML + "<h4>Something went wrong</h4>";
-    console.log(err);
-  })
+    .put(`https://crudcrud.com/api/7e8cd9558cca462a99966f16967ae685/newBooking/${userId}`, user)
+    .then(response => {
+      console.log("updated")
+      console.log(response.data);
+      //updateItemInFrontend(userId, user);
+      //screenDisplay(response.data);//printing undefined-undefined
+      resetForm();
+      //fetchDataFromBackend();
+    })
+    .catch(error => console.log(error));
+}
+
+function addNewItemsToBackend(user) {
+  axios
+    .post("https://crudcrud.com/api/7e8cd9558cca462a99966f16967ae685/newBooking", user)
+    .then(response => {
+      console.log("added")
+      console.log(response.data);
+      screenDisplay(response.data);
+      resetForm();
+      //fetchDataFromBackend();
+    })
+    .catch(error => console.log(error));
+}
 
 
+// function updateItemInFrontend(userId, updatedUser) {
+//   const li = document.getElementById("editdata-id").parentElement.parentElement;
+//   li.firstChild.textContent = `${updatedUser.Name} - ${updatedUser.Email}`;
+// }
 
-//screenDisplay(obj);
+function editItems(e) {
+ 
+  if (e.target.classList.contains("edit")) {
+    const li = e.target.parentElement.parentElement;
+    const editButton = e.target;
+    
+    //const userId = document.getElementById("userId").value;
+     const editButtonId = editButton.getAttribute("editdata-id");
+     userId = editButtonId;
+    axios.get(`https://crudcrud.com/api/7e8cd9558cca462a99966f16967ae685/newBooking/${userId}`)
+      .then(response => {
+        const user = response.data;
 
+        
+        document.getElementById("name").value = user.Name;
+        document.getElementById("email").value = user.Email;
+
+        
+        li.firstChild.textContent = `${user.Name} - ${user.Email}`;
+      })
+
+      .catch(error => console.log(error));
+
+      //addItemsToBackEnd(e);
+      li.remove();
+      
+  }
+  
 }
 
 
@@ -222,7 +273,7 @@ function deleteItems(e) {
                 li.remove();
                 const itemId = deleteButton.getAttribute("data-id");
                 axios
-                .delete(`https://crudcrud.com/api/38e07153d87d47ed80659e4958aa699d/newBooking/${itemId}`)
+                .delete(`https://crudcrud.com/api/7e8cd9558cca462a99966f16967ae685/newBooking/${itemId}`)
                 .then(res => console.log(res.data))
                 .catch(err => console.log(err));
                 
@@ -232,54 +283,15 @@ function deleteItems(e) {
         }
     }
     
-    function editItems(e) {
-  if (e.target.classList.contains("edit")) {
-    const li = e.target.parentElement.parentElement;
-    const entry = li.firstChild.textContent;
-    const editButton = e.target
 
-    axios
-      .get("https://crudcrud.com/api/38e07153d87d47ed80659e4958aa699d/newBooking")
-      .then(res => {
-        const userData = res.data;
-        const userIndex = userData.findIndex(obj => obj.Name + "-" + obj.Email === entry);
 
-        if (userIndex !== -1) {
-          const user = userData[userIndex];
-          
-          li.remove();
-          document.getElementById("name").value = user.Name;
-          document.getElementById("email").value = user.Email;
 
-          const updateUser = {
-            Name: document.getElementById("name").value,
-            Email: document.getElementById("email").value
-          };
-        
-          const userId = editButton.getAttribute("editdata-id");
-          axios
-            .put(`https://crudcrud.com/api/38e07153d87d47ed80659e4958aa699d/newBooking/${userId}`, updateUser)
-            .then(res => {
-              console.log(res.data);
-              
-            //   user.Name = updateUser.Name;
-            //   user.Email = updateUser.Email;
-            //   li.firstChild.textContent = user.Name + "-" + user.Email;
-            })
-            .catch(err => console.log(err));
-        }
-      })
-      .catch(err => console.log(err));
-      return;
-  }
-}
 
-    
-  
 
 function fetchDataFromBackend() {
+  //userList.innerHTML = '';
   axios
-    .get("https://crudcrud.com/api/38e07153d87d47ed80659e4958aa699d/newBooking")
+    .get("https://crudcrud.com/api/7e8cd9558cca462a99966f16967ae685/newBooking")
     .then((res) => {
       const data = res.data;
       data.forEach((obj) => {
@@ -291,6 +303,11 @@ function fetchDataFromBackend() {
     });
 }
 
+function resetForm() {
+  //document.getElementById("userId").value = "";
+  document.getElementById("name").value = "";
+  document.getElementById("email").value = "";
+}
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" 
