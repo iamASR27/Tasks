@@ -1,0 +1,7 @@
+.ex-items {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: #4b4b4b;
+    margin: 40px ;
+}

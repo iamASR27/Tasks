@@ -1,0 +1,30 @@
+.ex-date {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 5.5rem;
+    min-height: 5.5rem;
+    color: aliceblue;
+    border: 2px solid black;
+    border-radius: 12px;
+    background-color: grey;
+}
+
+.ex-month {
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    color: snow;
+}
+
+.ex-year {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.ex-day {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: snow;
+}

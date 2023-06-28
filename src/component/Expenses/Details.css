@@ -1,0 +1,30 @@
+.ex-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 90%;
+    margin: auto auto;
+    /* border: 1px solid black; */
+}
+
+.ex-title, .ex-location {
+    flex: 1;
+    /* border: 1px solid black; */
+    font-size: 1.5rem;
+    color: blanchedalmond;
+    background-color: black;
+    padding-bottom: 16px;
+}
+
+.ex-amount {
+    width: 13%;
+    height: 50px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-left: 0.5rem;
+    border: 2px solid snow;
+    background-color: lightblue;
+    color: darkslategray;
+    padding: 0.4rem;
+    
+}
