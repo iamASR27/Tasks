@@ -4,6 +4,13 @@ import Exdetails from "./Details";
 import './Items.css'
 
 const ExItems = (props) => {
+  const clickHandler = () => {
+    console.log("Clicked!");
+  }
+  const deleteExpense = () => {
+    const cardElement = document.getElementsByClassName("ex-items");
+    cardElement[0].remove();
+  }
   return (
     <Card className="ex-items">
       <ExDate date={props.date} className="ex-date"/>
@@ -12,6 +19,8 @@ const ExItems = (props) => {
         amount={props.amount}
         location={props.location}
       />
+      <button onClick={clickHandler}>Change Title</button>
+      <button onClick={deleteExpense}>Delete</button>
     </Card>
   );
 };
