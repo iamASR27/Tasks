@@ -18,13 +18,14 @@
 
 .ex-amount {
     width: 13%;
-    height: 50px;
+    height: 60px;
     font-size: 1.2rem;
     font-weight: bold;
     margin-left: 0.5rem;
     border: 2px solid snow;
-    background-color: lightblue;
-    color: darkslategray;
+    border-radius: 12px;
+    background-color: indigo;
+    color: white;
     padding: 0.4rem;
     
 }
