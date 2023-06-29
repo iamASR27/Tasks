@@ -10,7 +10,7 @@ const Exdetails = (props) => {
       <div className="ex-title">{title}</div>
 
       <div className="ex-location">{location}</div>
-      <div className="ex-amount">Rs. {amount}</div>
+      <div className="ex-amount">${amount}</div>
     </div>
   );
 };
