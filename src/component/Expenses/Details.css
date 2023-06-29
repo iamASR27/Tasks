@@ -24,8 +24,8 @@
     margin-left: 0.5rem;
     border: 2px solid snow;
     border-radius: 12px;
-    background-color: indigo;
+    background-color: rgb(41, 9, 63);
     color: white;
     padding: 0.4rem;
-    
+    box-shadow: 0 0 18px rgb(41, 9, 63);
 }
