@@ -1,10 +1,11 @@
-import ExItems from "./component/Expenses/Items";
-import Card from "./component/UI/Card";
+import React, {useState} from 'react';
+// import Card from "./component/UI/Card";
 import NewExpense from "./component/NewExpense/NewExpense";
 import './App.css';
+import Expenses from "./component/Expenses/Expenses";
 
 const App = () => {
-  const expenses = [
+  const [expenses, setExpenses] = useState([
     {
       id: "e1",
       title: "Toilet Paper",
@@ -33,12 +34,22 @@ const App = () => {
       date: new Date(2021, 5, 12),
       location: "Mumbai",
     },
-  ];
+  ]);
 
+
+
+  const addExpenseHandler = (expense) => {
+    setExpenses((prevExpenses) => {
+      return [...prevExpenses, expense]
+    });
+    console.log("In App.js");
+    console.log(expense);
+  }
   return (
     <div className="expense-body">
-      <NewExpense />
-    <Card>
+      <NewExpense onAddExpense={addExpenseHandler} />
+      <Expenses expenses={expenses}/>
+    {/* <Card>
       
       {expenses.map((expense) => {
         return (
@@ -51,7 +62,7 @@ const App = () => {
           />
         );
       })}
-    </Card>
+    </Card> */}
     </div>
   );
 };

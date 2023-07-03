@@ -1,6 +1,7 @@
-import './Details.css';
+import React from 'react';
+import './ExpenseDetails.css';
 
-const Exdetails = (props) => {
+const Expensedetails = (props) => {
   const title = props.title;
   const amount = props.amount;
   const location = props.location;
@@ -15,4 +16,4 @@ const Exdetails = (props) => {
   );
 };
 
-export default Exdetails;
+export default Expensedetails;
