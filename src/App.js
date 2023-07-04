@@ -40,10 +40,8 @@ const App = () => {
 
   const addExpenseHandler = (expense) => {
     setExpenses((prevExpenses) => {
-      return [...prevExpenses, expense]
+      return [expense, ...prevExpenses];
     });
-    console.log("In App.js");
-    console.log(expense);
   }
   return (
     <div className="expense-body">
