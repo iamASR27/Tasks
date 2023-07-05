@@ -16,7 +16,7 @@ const App = () => {
     {
       id: "e2",
       title: "New TV",
-      amount: 7990.49,
+      amount: 799.49,
       date: new Date(2021, 2, 12),
       location: "Pune",
     },
