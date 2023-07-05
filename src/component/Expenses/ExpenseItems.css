@@ -3,7 +3,9 @@
     justify-content: space-between;
     align-items: flex-start;
     background-color: #4b4b4b;
-    margin: 40px ;
+    margin: auto auto ;
     border-radius: 12px;
-    width: auto;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    width: 95%;
 }

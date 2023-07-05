@@ -6,10 +6,10 @@
     min-width: 5.5rem;
     min-height: 5.5rem;
     color: aliceblue;
-    border: 2px solid black;
+    border: 1px solid white;
     border-radius: 12px;
-    background-color: grey;
-    box-shadow: 0 0 18px black;
+    background-color: rgb(31, 29, 29);
+    box-shadow: 0 0 18px rgb(36, 23, 23);
 }
 
 .ex-month {
