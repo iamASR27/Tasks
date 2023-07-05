@@ -1,0 +1,20 @@
+.expenses-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .expenses-list__fallback {
+    color: white;
+    text-align: center;
+  }
+
+  .expenses-single {
+    list-style: none;
+    padding: 0;
+  }
+
+  .expenses-single p {
+    color: white;
+    text-align: center;
+  }
+  
